@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using MovieCatalog.Models;
-using System.Diagnostics;
 
 namespace MovieCatalog.Controllers
 {
@@ -21,12 +19,6 @@ namespace MovieCatalog.Controllers
         public IActionResult Privacy()
         {
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
