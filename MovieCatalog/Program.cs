@@ -1,11 +1,16 @@
-var builder = WebApplication.CreateBuilder(args);
+using MovieCatalog.Extensions;
+
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+builder.Services.AddControllersWithViews();
+builder.Services.AddApplicationServices(builder.Configuration);
+
 
 // Configure the HTTP request pipeline.
+var app = builder.Build();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
