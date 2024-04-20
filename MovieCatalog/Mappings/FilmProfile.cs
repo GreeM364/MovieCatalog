@@ -10,7 +10,6 @@ namespace MovieCatalog.Mappings
         {
             CreateMap<CreateFilmRequest, Film>().ReverseMap();
             CreateMap<UpdateFilmRequest, Film>().ReverseMap();
-            CreateMap<DeleteFilmRequest, Film>().ReverseMap();
             CreateMap<FilmResponse, Film>().ReverseMap();
         }
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieCatalog.Data;
 
@@ -11,9 +12,11 @@ using MovieCatalog.Data;
 namespace MovieCatalog.Migrations
 {
     [DbContext(typeof(MovieCatalogDbContext))]
-    partial class MovieCatalogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240419211123_AddCategoryRelationshipConfiguration")]
+    partial class AddCategoryRelationshipConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace MovieCatalog.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("MovieCatalog.Entities.Film", b =>
@@ -65,7 +68,7 @@ namespace MovieCatalog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Films", (string)null);
+                    b.ToTable("Films");
                 });
 
             modelBuilder.Entity("MovieCatalog.Entities.FilmCategory", b =>
@@ -88,7 +91,7 @@ namespace MovieCatalog.Migrations
 
                     b.HasIndex("FilmId");
 
-                    b.ToTable("FilmCategories", (string)null);
+                    b.ToTable("FilmCategories");
                 });
 
             modelBuilder.Entity("MovieCatalog.Entities.Category", b =>

@@ -9,5 +9,14 @@ namespace MovieCatalog.Data
         { }
 
         DbSet<Film> Films { get; set; }
+        DbSet<Category> Categories { get; set; }    
+        DbSet<FilmCategory> FilmCategories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        }
     }
 }

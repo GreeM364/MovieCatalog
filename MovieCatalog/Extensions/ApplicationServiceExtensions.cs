@@ -21,6 +21,7 @@ namespace MovieCatalog.Extensions
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             services.AddScoped<IFilmService, FilmService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             return services;
         }
