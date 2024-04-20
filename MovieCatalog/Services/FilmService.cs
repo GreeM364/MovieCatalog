@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MovieCatalog.Entities;
+using MovieCatalog.Exceptions;
 using MovieCatalog.Models.Film;
 using MovieCatalog.Repository.IRepository;
 using MovieCatalog.Services.Interfaces;
@@ -33,7 +34,7 @@ namespace MovieCatalog.Services
             var film = await _filmRepository.GetByIdAsync(id);
 
             if (film is null)
-                throw new Exception(); // TODO: Create custom Exception
+                throw new NotFoundException(nameof(Film), id);
 
             var result = _mapper.Map<FilmResponse>(film);
             return result;
@@ -45,7 +46,7 @@ namespace MovieCatalog.Services
                 FirstOrDefaultAsync(f => f.Name == filmRequest.Name && f.Director == filmRequest.Director);
 
             if (existing is not null)
-                throw new Exception(); // TODO: Create custom Exception
+                throw new BadRequestException(nameof(Film), filmRequest);
 
             var createdFilm = _mapper.Map<Film>(filmRequest);
             var film = await _filmRepository.AddAsync(createdFilm); 
@@ -59,7 +60,7 @@ namespace MovieCatalog.Services
             var filmToUpdate = await _filmRepository.GetByIdAsync(filmRequest.Id);
 
             if (filmToUpdate is null)
-                throw new Exception(); // TODO: Create custom Exception
+                throw new NotFoundException(nameof(Film), filmRequest.Id);
 
             var updatedFilm = _mapper.Map(filmRequest, filmToUpdate);
             var film = await _filmRepository.UpdateAsync(updatedFilm);
@@ -73,7 +74,7 @@ namespace MovieCatalog.Services
             var filmToRemove = await _filmRepository.GetByIdAsync(id);
 
             if (filmToRemove is null)
-                throw new Exception(); // TODO: Create custom Exception
+                throw new NotFoundException(nameof(Film), id);
 
             await _filmRepository.RemoveAsync(filmToRemove);
         }

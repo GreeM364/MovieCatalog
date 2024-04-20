@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MovieCatalog.Entities;
+using MovieCatalog.Exceptions;
 using MovieCatalog.Models.Category;
-using MovieCatalog.Models.Film;
 using MovieCatalog.Repository.IRepository;
 using MovieCatalog.Services.Interfaces;
 
@@ -33,7 +33,7 @@ namespace MovieCatalog.Services
             var category = await _categoryRepository.GetByIdAsync(id);
 
             if (category is null)
-                throw new Exception(); // TODO: Create custom Exception
+                throw new NotFoundException(nameof(Category), id);
 
             var result = _mapper.Map<CategoryResponse>(category);
             return result;
@@ -45,7 +45,7 @@ namespace MovieCatalog.Services
                 FirstOrDefaultAsync(f => f.Name == categoryRequest.Name);
 
             if (existing is not null)
-                throw new Exception(); // TODO: Create custom Exception
+                throw new BadRequestException(nameof(Category), categoryRequest);
 
             var createdCategory = _mapper.Map<Category>(categoryRequest);
             var category = await _categoryRepository.AddAsync(createdCategory);
@@ -59,7 +59,7 @@ namespace MovieCatalog.Services
             var categoryToUpdate = await _categoryRepository.GetByIdAsync(categoryRequest.Id);
 
             if (categoryToUpdate is null)
-                throw new Exception(); // TODO: Create custom Exception
+                throw new NotFoundException(nameof(Category), categoryRequest.Id);
 
             var updatedCategory = _mapper.Map(categoryRequest, categoryToUpdate);
             var category = await _categoryRepository.UpdateAsync(updatedCategory);
@@ -73,7 +73,7 @@ namespace MovieCatalog.Services
             var categoryToRemove = await _categoryRepository.GetByIdAsync(id);
 
             if (categoryToRemove is null)
-                throw new Exception(); // TODO: Create custom Exception
+                throw new NotFoundException(nameof(Category), id);
 
             await _categoryRepository.RemoveAsync(categoryToRemove);
         }
