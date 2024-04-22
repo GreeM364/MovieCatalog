@@ -3,7 +3,7 @@
 <form method="post" asp-action="Create">
     <div class="border p-3 bg-white">
         <div class="form-group row">
-            <h2 class="text-info pl-3">Add Category</h2>
+            <h2 class="text-info pl-3">Add Film</h2>
         </div>
         <div class="row">
             <div class="col-8">
@@ -30,7 +30,7 @@
                         <label asp-for="CreateFilmRequest.Release"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="CreateFilmRequest.Release" class="form-control" type="date" />
+                        <input asp-for="CreateFilmRequest.Release" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                         <span asp-validation-for="CreateFilmRequest.Release" class="text-danger"></span>
                     </div>
                 </div>

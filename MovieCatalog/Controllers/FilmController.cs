@@ -79,7 +79,7 @@ namespace MovieCatalog.Controllers
         {
             await _filmService.UpdateFilmAsync(filmUpdateViewModel.UpdateFilmRequest);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
@@ -102,7 +102,7 @@ namespace MovieCatalog.Controllers
         {
             await _filmService.DeleteFilmAsync(id);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }
