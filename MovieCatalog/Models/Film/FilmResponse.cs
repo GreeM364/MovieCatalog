@@ -10,5 +10,10 @@ namespace MovieCatalog.Models.Film
         public required DateTime Release { get; set; }
 
         public List<CategoryResponse>? Categories { get; set; }
+
+        public string CategoriesLikeString
+        {
+            get { return string.Join(", ", Categories.Select(c => c.Name)); }
+        }
     }
 }

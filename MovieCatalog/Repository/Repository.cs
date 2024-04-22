@@ -61,7 +61,7 @@ namespace MovieCatalog.Repository
             if (!isTracking)
                 query = query.AsNoTracking();
 
-            return await query.FirstOrDefaultAsync();
+            return await query.SingleOrDefaultAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)
@@ -75,6 +75,12 @@ namespace MovieCatalog.Repository
             await SaveChangesAsync();
 
             return entity;
+        }
+
+        public async Task AddRangeAsync(IEnumerable<T> entities)
+        {
+            await dbSet.AddRangeAsync(entities);
+            await SaveChangesAsync();
         }
 
         public async Task<T> UpdateAsync(T entity)
@@ -91,10 +97,15 @@ namespace MovieCatalog.Repository
             await SaveChangesAsync();
         }
 
-        public async Task RemoveRangeAsync(IEnumerable<T> entity)
+        public async Task RemoveRangeAsync(IEnumerable<T> entities)
         {
-            dbSet.RemoveRange(entity);
+            dbSet.RemoveRange(entities);
             await SaveChangesAsync();
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await dbSet.AnyAsync(e => e.Id == id);
         }
 
         public async Task SaveChangesAsync()

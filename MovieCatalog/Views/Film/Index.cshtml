@@ -1,0 +1,46 @@
+﻿@using Syncfusion.EJ2
+@using TextAlign = Syncfusion.EJ2.Grids.TextAlign
+@using MovieCatalog.Models.Film
+@using Syncfusion.EJ2.Grids
+@model List<MovieCatalog.Models.Film.FilmResponse> 
+
+
+<div class="bg-white p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Film List</h2>
+        </div>
+        <div class="col-6 text-right">
+            <a asp-controller="Film" asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus"></i> &nbsp; Create New Film
+            </a>
+        </div>
+    </div>
+    <br /><br />
+    
+
+    @(Html.EJS().Grid<FilmResponse>("Grid")
+        .DataSource(Model)
+        .AllowFiltering().FilterSettings(filter =>
+        {
+            filter.Type(FilterType.FilterBar).Mode(FilterBarMode.Immediate);
+        })
+        .AllowSorting()
+        .AllowPaging()
+        .Columns(col =>
+        {
+            col.Field(f => f.Id).HeaderText("ID").IsPrimaryKey(true).TextAlign(TextAlign.Right).Width(100).Add();
+            col.Field(f => f.Name).HeaderText("Name").TextAlign(TextAlign.Right).Add();
+            col.Field(f => f.Director).HeaderText("Director").TextAlign(TextAlign.Right).Add();
+            col.Field(f => f.Release).HeaderText("Release").TextAlign(TextAlign.Right).Format("MM/dd/yyyy").Add();
+            col.Field(f => f.CategoriesLikeString).HeaderText("Categories").TextAlign(TextAlign.Right).Add();
+            col.Field(f => f.Id).HeaderText("Actions").Template(
+                "<a rel='nofollow' href='Film/Details/${Id}' class='btn btn-primary mr-1'><i class='fas fa-info'></i></a>" +
+                "<a rel='nofollow' href='Film/Edit/${Id}' class='btn btn-info mr-1'><i class='fas fa-edit'></i></a>" +
+                "<a rel='nofollow' href='Film/Delete/${Id}' class='btn btn-danger'><i class='fas fa-trash'></i></a>"
+                ).Width(200).Add();
+
+        }).Render())
+</div>
+
+

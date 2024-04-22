@@ -13,9 +13,11 @@ namespace MovieCatalog.Repository.IRepository
 
         Task<T?> GetByIdAsync(int id);
         Task<T> AddAsync(T entity);
+        Task AddRangeAsync(IEnumerable<T> entities);
         Task<T> UpdateAsync(T entity);
         Task RemoveAsync(T entity);
-        Task RemoveRangeAsync(IEnumerable<T> entity);
+        Task RemoveRangeAsync(IEnumerable<T> entities);
+        Task<bool> ExistsAsync(int id);
         Task SaveChangesAsync();
     }
 }
