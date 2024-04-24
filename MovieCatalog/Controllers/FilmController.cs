@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieCatalog.Models.Film;
 using MovieCatalog.Models.ViewModels;
@@ -22,6 +24,13 @@ namespace MovieCatalog.Controllers
         {
             var films = await _filmService.GetAllFilmsAsync();
 
+            JsonSerializerOptions options = new()
+            {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                WriteIndented = true
+            };
+            var x = JsonSerializer.Serialize(films, options);
+
             return View(films);
         }
 
@@ -36,7 +45,7 @@ namespace MovieCatalog.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var categories = await _categoryService.GetAllCategoriesAsync();
+            var categories = await _categoryService.GetAllCategoriesWithDetailsAsync();
 
             FilmCreateViewModel filmViewModel = new FilmCreateViewModel()
             {
@@ -62,7 +71,7 @@ namespace MovieCatalog.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var categories = await _categoryService.GetAllCategoriesAsync();
+            var categories = await _categoryService.GetAllCategoriesWithDetailsAsync();
             var film = await _filmService.GetFilmByIdAsync(id);
 
             FilmUpdateViewModel filmViewModel = new FilmUpdateViewModel()

@@ -85,7 +85,6 @@ namespace MovieCatalog.Services
             return result;
         }
 
-
         public async Task DeleteFilmAsync(int id)
         {
             var filmToRemove = await _filmRepository.GetByIdAsync(id);
@@ -96,15 +95,15 @@ namespace MovieCatalog.Services
             await _filmRepository.RemoveAsync(filmToRemove);
         }
 
-        public async Task UpdateFilmCategories(int id, List<int> newCategories)
+        public async Task UpdateFilmCategories(UpdateFilmCategoriesRequest updateFilmCategoriesRequest)
         {
-            var filmCategoriesToUpdate = await _filmRepository.FirstOrDefaultAsync(f => f.Id == id,
+            var filmCategoriesToUpdate = await _filmRepository.FirstOrDefaultAsync(f => f.Id == updateFilmCategoriesRequest.FilmId,
                 includeProperties: "FilmCategories.Category");
 
             if (filmCategoriesToUpdate is null)
-                throw new NotFoundException(nameof(Film), id);
+                throw new NotFoundException(nameof(Film), updateFilmCategoriesRequest.FilmId);
 
-            UpdateFilmCategories(filmCategoriesToUpdate, newCategories);
+            UpdateFilmCategories(filmCategoriesToUpdate, updateFilmCategoriesRequest.NewCategories);
 
             await _filmRepository.UpdateAsync(filmCategoriesToUpdate);
         }
@@ -113,26 +112,25 @@ namespace MovieCatalog.Services
         {
             var currentCategories = filmToUpdate.FilmCategories?.Select(fc => fc.CategoryId).ToList();
 
-            var categoriesToRemove = currentCategories?.Except(newCategories);
-            if (categoriesToRemove != null)
+            var categoriesToRemove = currentCategories?.Except(newCategories).ToList();
+            if (categoriesToRemove is not null)
             {
                 foreach (var categoryId in categoriesToRemove)
                 {
                     var categoryToRemove = filmToUpdate.FilmCategories?.FirstOrDefault(fc => fc.CategoryId == categoryId);
+
                     if (categoryToRemove is not null)
-                    {
                         filmToUpdate.FilmCategories?.Remove(categoryToRemove);
-                    }
                 }
             }
 
-            var categoriesToAdd = newCategories.Except(currentCategories);
+            var categoriesToAdd = newCategories.Except(currentCategories).ToList();
             foreach (var categoryId in categoriesToAdd)
             {
                 var existingCategory = _categoryRepository.FirstOrDefaultAsync(c => c.Id == categoryId).Result;
 
                 if (existingCategory is not null)
-                    filmToUpdate.FilmCategories.Add(new FilmCategory { FilmId = filmToUpdate.Id, CategoryId = categoryId });
+                    filmToUpdate.FilmCategories!.Add(new FilmCategory { FilmId = filmToUpdate.Id, CategoryId = categoryId });
                 else
                     throw new NotFoundException(nameof(Category), categoryId);
             }

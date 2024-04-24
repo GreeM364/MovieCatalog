@@ -80,23 +80,28 @@
 
     updateFilmCategories() {
         const filmId = document.getElementById('Id').value;
-        fetch(`/api/CategoryAPI/${filmId}`, {
+        const requestBody = {
+            filmId: filmId,
+            newCategories: [...this.selectedCategories]
+        };
+
+        fetch(`/api/CategoryAPI`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify([...this.selectedCategories])
+            body: JSON.stringify(requestBody)
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to add categories');
-            }
-            console.log('Selected categories added successfully');
-            this.categoryModal.hide();
-        })
-        .catch(error => {
-            console.error('Error adding categories:', error.message);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to add categories');
+                }
+                console.log('Selected categories added successfully');
+                this.categoryModal.hide();
+            })
+            .catch(error => {
+                console.error('Error adding categories:', error.message);
+            });
     }
 }
 

@@ -1,19 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
+using MovieCatalog.Services.Interfaces;
 
 namespace MovieCatalog.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IFilmService _filmService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IFilmService filmService)
         {
-            _logger = logger;
+            _filmService = filmService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var films = await _filmService.GetAllFilmsAsync();
+
+            return View(films);
         }
     }
 }

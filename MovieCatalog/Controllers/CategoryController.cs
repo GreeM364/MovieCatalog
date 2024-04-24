@@ -17,7 +17,7 @@ namespace MovieCatalog.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var categories = await _categoryService.GetAllCategoriesAsync();
+            var categories = await _categoryService.GetAllCategoriesWithDetailsAsync();
 
             return View(categories);
         }
@@ -25,7 +25,7 @@ namespace MovieCatalog.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var category = await _categoryService.GetCategoryByIdAsync(id);
+            var category = await _categoryService.GetCategoryWithDetailsByIdAsync(id);
 
             return View(category);
         }
@@ -91,7 +91,7 @@ namespace MovieCatalog.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _categoryService.GetCategoryByIdAsync(id);
+            var category = await _categoryService.GetCategoryWithDetailsByIdAsync(id);
 
             return View(category);
         }
@@ -99,7 +99,7 @@ namespace MovieCatalog.Controllers
         [HttpPost]
         public async Task<IActionResult> DeletePost(int id)
         {
-            var categoryToRemove = await _categoryService.GetCategoryByIdAsync(id);
+            var categoryToRemove = await _categoryService.GetCategoryWithDetailsByIdAsync(id);
 
             if (categoryToRemove.ChildCategories != null && categoryToRemove.ChildCategories.Any())
             {

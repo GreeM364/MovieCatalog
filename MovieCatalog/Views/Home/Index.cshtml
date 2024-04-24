@@ -1,8 +1,31 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model List<MovieCatalog.Models.Film.FilmResponse>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="container-fluid">
+        <div class="text-center">
+            <h1 class="display-4">Welcome to Our Movie Catalog</h1>
+            <p>Explore our collection of amazing films!</p>
+            <img src="images/main-poster.jpg" class="img-fluid w-75" alt="Main Poster">
+        </div>
+    </div>
+
+
+
+    <div class="row mt-5">
+        @foreach (var film in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">@film.Name</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Directed by: @film.Director</p>
+                        <p class="card-text">Release Date: @film.Release.ToShortDateString()</p>
+                        <p class="card-text">Categories: @film.CategoriesLikeString</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>

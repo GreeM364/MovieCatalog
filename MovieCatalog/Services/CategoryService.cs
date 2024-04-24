@@ -19,6 +19,18 @@ namespace MovieCatalog.Services
 
         public async Task<List<CategoryResponse>> GetAllCategoriesAsync()
         {
+            var categories = await _categoryRepository.GetAllAsync();
+
+            if (categories.Count == 0)
+                return Enumerable.Empty<CategoryResponse>().ToList();
+
+            var result = _mapper.Map<List<CategoryResponse>>(categories);
+
+            return result;
+        }
+
+        public async Task<List<CategoryResponse>> GetAllCategoriesWithDetailsAsync()
+        {
             var categories = await _categoryRepository.GetAllAsync(includeProperties: "ParentCategory,FilmCategories.Film");
 
             if (categories.Count == 0)
@@ -36,6 +48,17 @@ namespace MovieCatalog.Services
         }
 
         public async Task<CategoryResponse> GetCategoryByIdAsync(int id)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+
+            if (category is null)
+                throw new NotFoundException(nameof(Category), id);
+
+            var result = _mapper.Map<CategoryResponse>(category);
+            return result;
+        }
+
+        public async Task<CategoryResponse> GetCategoryWithDetailsByIdAsync(int id)
         {
             var category = await _categoryRepository.FirstOrDefaultAsync(c => c.Id == id,
                 includeProperties: "ParentCategory,ChildCategories,FilmCategories.Film");
