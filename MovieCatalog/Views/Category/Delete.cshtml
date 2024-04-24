@@ -1,0 +1,71 @@
+﻿@model MovieCatalog.Models.Category.CategoryResponse
+
+<form method="post" asp-action="DeletePost" class="border p-4 bg-light">
+    <input asp-for="Id" hidden />
+    <h2 class="text-info mb-4">Delete Categories</h2>
+    
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="form-group row mb-4">
+                <label class="col-lg-4 col-form-label">Name:</label>
+                <div class="col-lg-8">
+                    <input asp-for="Name" disabled class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group row mb-4">
+                <label class="col-lg-4 col-form-label">Parent Category:</label>
+                <div class="col-lg-8">
+                    <input asp-for="ParentCategory.Name" disabled class="form-control" />
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <h4 class="text-info mb-4">Child Categories</h4>
+                <div class="d-flex flex-wrap">
+                    @if (Model.ChildCategories != null && Model.ChildCategories.Any())
+                    {
+                        @foreach (var childCategory in Model.ChildCategories)
+                        {
+                            <div class="border border-info rounded-pill px-3 py-1 mr-2 mb-2">
+                                <div class="text-info">@childCategory.Name</div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No child categories</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <h4 class="text-info mb-4">Films in this Category</h4>
+            <div class="d-flex flex-wrap">
+                @if (Model.Films != null && Model.Films.Any())
+                {
+                    @foreach (var detail in Model.Films)
+                    {
+                        <div class="border border-info rounded-pill px-3 py-1 mr-2 mb-2">
+                            <div class="text-info">@detail.Name</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No films in this category</p>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-group row mt-4">
+        <div class="col-lg-8 offset-lg-4">
+            <input type="submit" class="btn btn-danger mr-2" value="Delete" />
+            <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Back</a>
+        </div>
+    </div>
+</form>

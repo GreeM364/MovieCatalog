@@ -5,6 +5,8 @@ using MovieCatalog.Repository;
 using MovieCatalog.Services;
 using MovieCatalog.Services.Interfaces;
 using System.Reflection;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace MovieCatalog.Extensions
 {

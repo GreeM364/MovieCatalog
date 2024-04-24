@@ -2,7 +2,7 @@
 {
     public class CreateCategoryRequest
     {
-        public required string Name { get; set; }
+        public string Name { get; set; } = null!;
         public int? ParentCategoryId { get; set; }
     }
 }

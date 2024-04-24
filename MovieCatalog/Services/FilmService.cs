@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MovieCatalog.Entities;
 using MovieCatalog.Exceptions;
-using MovieCatalog.Models.Category;
 using MovieCatalog.Models.Film;
 using MovieCatalog.Repository.IRepository;
 using MovieCatalog.Services.Interfaces;
@@ -34,18 +33,6 @@ namespace MovieCatalog.Services
             return result;
         }
 
-        public async Task<List<CategoryResponse>> GetAlCategoriesAsync()
-        {
-            List<Category> categories = await _categoryRepository.GetAllAsync();
-
-            if (categories.Count == 0)
-                return Enumerable.Empty<CategoryResponse>().ToList();
-
-            var result = _mapper.Map<List<CategoryResponse>>(categories);
-
-            return result;
-        }
-
 
         public async Task<FilmResponse> GetFilmByIdAsync(int id)
         {
@@ -54,7 +41,6 @@ namespace MovieCatalog.Services
 
             if (film is null)
                 throw new NotFoundException(nameof(Film), id);
-
 
             var result = _mapper.Map<FilmResponse>(film);
             return result;

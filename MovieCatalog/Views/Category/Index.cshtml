@@ -1,0 +1,58 @@
+﻿@model IEnumerable<MovieCatalog.Models.Category.CategoryResponse>
+
+<div class="container p-3 bg-light">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Category List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Category" asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus"></i> &nbsp; Create New Category
+            </a>
+        </div>
+    </div>
+
+    <br /><br />
+
+    @if (Model.Any())
+    {
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Category Name</th>
+                <th>Film Count</th>
+                <th>Level of Nesting</th>
+                <th class="text-center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>@category.Films?.Count()</td>
+                    <td>@category.LevelOfNesting</td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                                <a asp-controller="Category" asp-route-Id="@category.Id" asp-action="Details" class="btn btn-info me-2">
+                                <i class="fas fa-info"></i>
+                            </a>
+                                <a asp-controller="Category" asp-route-Id="@category.Id" asp-action="Edit" class="btn btn-primary me-2">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a asp-controller="Category" asp-route-Id="@category.Id" asp-action="Delete" class="btn btn-danger me-2">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">No categories exist.</p>
+    }
+
+</div>

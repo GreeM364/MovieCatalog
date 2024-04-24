@@ -12,9 +12,8 @@ namespace MovieCatalog.Mappings
             CreateMap<UpdateFilmRequest, Film>().ReverseMap();
             CreateMap<Film, FilmResponse>()
                 .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => src.FilmCategories.Select(fc => fc.Category)))
+                .PreserveReferences()
                 .ReverseMap();
-
-            
         }
     }
 }

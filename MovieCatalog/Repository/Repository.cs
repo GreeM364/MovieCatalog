@@ -61,7 +61,7 @@ namespace MovieCatalog.Repository
             if (!isTracking)
                 query = query.AsNoTracking();
 
-            return await query.SingleOrDefaultAsync();
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)

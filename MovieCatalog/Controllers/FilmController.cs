@@ -9,10 +9,12 @@ namespace MovieCatalog.Controllers
     public class FilmController : Controller
     {
         private readonly IFilmService _filmService;
+        private readonly ICategoryService _categoryService;
 
-        public FilmController(IFilmService filmService)
+        public FilmController(IFilmService filmService, ICategoryService categoryService)
         {
             _filmService = filmService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
@@ -34,7 +36,7 @@ namespace MovieCatalog.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var categories = await _filmService.GetAlCategoriesAsync();
+            var categories = await _categoryService.GetAllCategoriesAsync();
 
             FilmCreateViewModel filmViewModel = new FilmCreateViewModel()
             {
@@ -49,9 +51,18 @@ namespace MovieCatalog.Controllers
             return View(filmViewModel);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create(FilmCreateViewModel filmViewModel)
+        {
+            await _filmService.CreateFilmAsync(filmViewModel.CreateFilmRequest);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var categories = await _filmService.GetAlCategoriesAsync();
+            var categories = await _categoryService.GetAllCategoriesAsync();
             var film = await _filmService.GetFilmByIdAsync(id);
 
             FilmUpdateViewModel filmViewModel = new FilmUpdateViewModel()
@@ -82,14 +93,7 @@ namespace MovieCatalog.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(FilmCreateViewModel filmViewModel)
-        {
-            await _filmService.CreateFilmAsync(filmViewModel.CreateFilmRequest);
-
-            return RedirectToAction(nameof(Index));
-        }
-
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var film = await _filmService.GetFilmByIdAsync(id);

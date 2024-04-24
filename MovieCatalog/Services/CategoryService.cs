@@ -16,21 +16,30 @@ namespace MovieCatalog.Services
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
+
         public async Task<List<CategoryResponse>> GetAllCategoriesAsync()
         {
-            var categories = await _categoryRepository.GetAllAsync();
+            var categories = await _categoryRepository.GetAllAsync(includeProperties: "ParentCategory,FilmCategories.Film");
 
             if (categories.Count == 0)
                 return Enumerable.Empty<CategoryResponse>().ToList();
 
             var result = _mapper.Map<List<CategoryResponse>>(categories);
 
+            foreach (var category in result)
+            {
+                category.ParentCategory = await GetParentCategoryAsync(category.ParentCategory?.Id);
+                category.LevelOfNesting = CalculateCategoryNestingLevel(category);
+            }
+
             return result;
         }
 
-        public async Task<CategoryResponse> GetCategoryByIdAsync(int id)
+
+        public async Task<CategoryResponse> GetCategoryByIdAsync(int id, bool includeAllParentCategories = false)
         {
-            var category = await _categoryRepository.GetByIdAsync(id);
+            var category = await _categoryRepository.FirstOrDefaultAsync(c => c.Id == id,
+                includeProperties: "ParentCategory,ChildCategories,FilmCategories.Film");
 
             if (category is null)
                 throw new NotFoundException(nameof(Category), id);
@@ -76,6 +85,40 @@ namespace MovieCatalog.Services
                 throw new NotFoundException(nameof(Category), id);
 
             await _categoryRepository.RemoveAsync(categoryToRemove);
+        }
+
+        private async Task<CategoryResponse?> GetParentCategoryAsync(int? parentCategoryId)
+        {
+            if (parentCategoryId == null)
+                return null;
+
+            var parentCategory = await _categoryRepository.FirstOrDefaultAsync(c => c.Id == parentCategoryId.Value,
+                includeProperties: "ParentCategory");
+
+            if (parentCategory == null)
+                return null;
+
+            var parentCategoryResponse = _mapper.Map<CategoryResponse>(parentCategory);
+            parentCategoryResponse.ParentCategory = await GetParentCategoryAsync(parentCategory.ParentCategoryId);
+
+            return parentCategoryResponse;
+        }
+
+        private int CalculateCategoryNestingLevel(CategoryResponse? category)
+        {
+            int nestingLevel = 1;
+            var currentCategory = category;
+
+            if (currentCategory is not null)
+            {
+                while (currentCategory.ParentCategory != null)
+                {
+                    currentCategory = currentCategory.ParentCategory;
+                    nestingLevel++;
+                }
+            }
+
+            return nestingLevel;
         }
     }
 }

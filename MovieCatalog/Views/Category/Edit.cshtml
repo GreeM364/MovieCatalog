@@ -1,0 +1,45 @@
+﻿@model MovieCatalog.Models.ViewModels.CategoryUpdateViewModel
+
+<form method="post">
+    <input asp-for="UpdateCategoryRequest.Id" hidden />
+    <div class="border p-3 bg-white">
+        <div class="form-group row">
+            <h2 class="text-info pl-3">Edit Category</h2>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        <label asp-for="UpdateCategoryRequest.Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="UpdateCategoryRequest.Name" class="form-control" />
+                        <span asp-validation-for="UpdateCategoryRequest.Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row py-2">
+                    <div class="col-4">
+                        <label>Categories:</label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="UpdateCategoryRequest.ParentCategoryId" asp-items="@Model.CategorySelectList" class="form-select">
+                            <option value="">Select a category or Stay null</option>
+                        </select>
+                        <span asp-validation-for="UpdateCategoryRequest.ParentCategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row py-2">
+                    <div class="col-8 offset-4 row">
+                        <div class="col">
+                            <input type="submit" class="btn btn-info w-100" value="Update" />
+                        </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success w-100"><i class="fas fa-sign-out-alt"></i> Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4"></div>
+        </div>
+    </div>
+</form>
