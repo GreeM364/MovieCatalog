@@ -38,11 +38,7 @@ namespace MovieCatalog.Services
 
             var result = _mapper.Map<List<CategoryResponse>>(categories);
 
-            foreach (var category in result)
-            {
-                category.ParentCategory = await GetParentCategoryAsync(category.ParentCategory?.Id);
-                category.LevelOfNesting = CalculateCategoryNestingLevel(category);
-            }
+            result.ForEach(category => category.LevelOfNesting = CalculateCategoryNestingLevel(category));
 
             return result;
         }
@@ -107,23 +103,6 @@ namespace MovieCatalog.Services
                 throw new NotFoundException(nameof(Category), id);
 
             await _categoryRepository.RemoveAsync(categoryToRemove);
-        }
-
-        private async Task<CategoryResponse?> GetParentCategoryAsync(int? parentCategoryId)
-        {
-            if (parentCategoryId == null)
-                return null;
-
-            var parentCategory = await _categoryRepository.FirstOrDefaultAsync(c => c.Id == parentCategoryId.Value,
-                includeProperties: "ParentCategory");
-
-            if (parentCategory == null)
-                return null;
-
-            var parentCategoryResponse = _mapper.Map<CategoryResponse>(parentCategory);
-            parentCategoryResponse.ParentCategory = await GetParentCategoryAsync(parentCategory.ParentCategoryId);
-
-            return parentCategoryResponse;
         }
 
         private int CalculateCategoryNestingLevel(CategoryResponse? category)
