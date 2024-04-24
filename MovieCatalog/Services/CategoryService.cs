@@ -35,8 +35,7 @@ namespace MovieCatalog.Services
             return result;
         }
 
-
-        public async Task<CategoryResponse> GetCategoryByIdAsync(int id, bool includeAllParentCategories = false)
+        public async Task<CategoryResponse> GetCategoryByIdAsync(int id)
         {
             var category = await _categoryRepository.FirstOrDefaultAsync(c => c.Id == id,
                 includeProperties: "ParentCategory,ChildCategories,FilmCategories.Film");

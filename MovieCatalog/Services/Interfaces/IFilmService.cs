@@ -9,5 +9,6 @@ namespace MovieCatalog.Services.Interfaces
         Task<FilmResponse> CreateFilmAsync(CreateFilmRequest filmRequest);
         Task<FilmResponse> UpdateFilmAsync(UpdateFilmRequest filmRequest);
         Task DeleteFilmAsync(int id);
+        Task UpdateFilmCategories(int id, List<int> newCategories);
     }
 }

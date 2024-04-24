@@ -96,6 +96,18 @@ namespace MovieCatalog.Services
             await _filmRepository.RemoveAsync(filmToRemove);
         }
 
+        public async Task UpdateFilmCategories(int id, List<int> newCategories)
+        {
+            var filmCategoriesToUpdate = await _filmRepository.FirstOrDefaultAsync(f => f.Id == id,
+                includeProperties: "FilmCategories.Category");
+
+            if (filmCategoriesToUpdate is null)
+                throw new NotFoundException(nameof(Film), id);
+
+            UpdateFilmCategories(filmCategoriesToUpdate, newCategories);
+
+            await _filmRepository.UpdateAsync(filmCategoriesToUpdate);
+        }
 
         private void UpdateFilmCategories(Film filmToUpdate, List<int> newCategories)
         {

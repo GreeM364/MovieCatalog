@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieCatalog.Models.Category;
-using MovieCatalog.Models.Film;
 using MovieCatalog.Models.ViewModels;
-using MovieCatalog.Services;
 using MovieCatalog.Services.Interfaces;
 
 namespace MovieCatalog.Controllers
@@ -27,7 +25,7 @@ namespace MovieCatalog.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var category = await _categoryService.GetCategoryByIdAsync(id, true);
+            var category = await _categoryService.GetCategoryByIdAsync(id);
 
             return View(category);
         }

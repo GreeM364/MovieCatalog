@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using MovieCatalog.Extensions;
 using MovieCatalog.Middlewares;
 
@@ -5,8 +6,9 @@ using MovieCatalog.Middlewares;
 // Add services to the container.
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddControllersWithViews().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 
 // Configure the HTTP request pipeline.
@@ -28,8 +30,12 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
 
 app.Run();
