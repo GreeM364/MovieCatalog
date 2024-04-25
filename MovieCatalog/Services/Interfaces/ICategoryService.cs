@@ -6,6 +6,7 @@ namespace MovieCatalog.Services.Interfaces
     {
         Task<List<CategoryResponse>> GetAllCategoriesAsync();
         Task<List<CategoryResponse>> GetAllCategoriesWithDetailsAsync();
+        Task<List<CategoryResponse>> GetParentCategoriesExcludingDescendants(int id);
         Task<CategoryResponse> GetCategoryByIdAsync(int id);
         Task<CategoryResponse> GetCategoryWithDetailsByIdAsync(int id);
         Task<CategoryResponse> CreateCategoryAsync(CreateCategoryRequest categoryRequest);

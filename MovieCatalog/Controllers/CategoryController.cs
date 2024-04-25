@@ -59,10 +59,10 @@ namespace MovieCatalog.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var parentCategories = await _categoryService.GetAllCategoriesAsync();
             var category = await _categoryService.GetCategoryByIdAsync(id);
+            var parentCategories = await _categoryService.GetParentCategoriesExcludingDescendants(id);
 
-            CategoryUpdateViewModel filmViewModel = new CategoryUpdateViewModel()
+            CategoryUpdateViewModel categoryViewModel = new CategoryUpdateViewModel()
             {
                 UpdateCategoryRequest = new UpdateCategoryRequest()
                 {
@@ -77,7 +77,7 @@ namespace MovieCatalog.Controllers
                 }).ToList()
             };
 
-            return View(filmViewModel);
+            return View(categoryViewModel);
         }
 
         [HttpPost]

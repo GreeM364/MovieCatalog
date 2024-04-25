@@ -43,6 +43,22 @@ namespace MovieCatalog.Services
             return result;
         }
 
+        public async Task<List<CategoryResponse>> GetParentCategoriesExcludingDescendants(int id)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+
+            if (category == null)
+                throw new NotFoundException(nameof(Category), id);
+
+            var categories = await _categoryRepository.GetAllAsync();
+
+            var filteredCategories = categories
+                .Where(c => c.Id != id && !IsDescendant(c, category)).ToList();
+
+            var result = _mapper.Map<List<CategoryResponse>>(filteredCategories);
+            return result;
+        }
+
         public async Task<CategoryResponse> GetCategoryByIdAsync(int id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
@@ -103,6 +119,20 @@ namespace MovieCatalog.Services
                 throw new NotFoundException(nameof(Category), id);
 
             await _categoryRepository.RemoveAsync(categoryToRemove);
+        }
+
+        private bool IsDescendant(Category category, Category targetCategory)
+        {
+            var parentCategory = category.ParentCategory;
+            while (parentCategory != null)
+            {
+                if (parentCategory.Id == targetCategory.Id)
+                {
+                    return true;
+                }
+                parentCategory = parentCategory.ParentCategory;
+            }
+            return false;
         }
 
         private int CalculateCategoryNestingLevel(CategoryResponse? category)
