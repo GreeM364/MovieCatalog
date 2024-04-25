@@ -8,16 +8,12 @@
 
         this.openCategoryModalButton.addEventListener('click', () => this.openCategoryModal());
         this.addCategoriesButton.addEventListener('click', () => this.updateFilmCategories());
+
+        this.categoryModalElement.addEventListener('hidden.bs.modal', this.removeEventListeners.bind(this));
     }
 
     openCategoryModal() {
-        fetch('/api/CategoryAPI')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch categories');
-                }
-                return response.json();
-            })
+        this.getCategories()
             .then(categories => {
                 this.displayCategories(categories);
                 this.getFilmCategoriesAndMarkSelected();
@@ -28,37 +24,41 @@
             });
     }
 
+    getCategories() {
+        return fetch('/api/CategoryAPI')
+            .then(response => {
+               if (!response.ok) {
+                   throw new Error('Failed to fetch categories');
+               }
+               return response.json();
+            });
+    }
+
     displayCategories(categories) {
         this.categoryList.innerHTML = '';
-        categories.forEach(category => {
-            const listItem = document.createElement('li');
-            listItem.textContent = category.name;
-            listItem.classList.add('list-group-item');
-            listItem.dataset.categoryId = category.id;
-            listItem.addEventListener('click', () => this.toggleCategory(listItem));
-            if (this.selectedCategories.has(category.id)) { 
-                listItem.classList.add('selected');
-            }
-            this.categoryList.appendChild(listItem);
-        });
+
+        const categoryNodes = categories.map((category) => this.createListItem(category));
+        this.categoryList.append(...categoryNodes);
+    }
+
+    createListItem(category) {
+        const listItem = document.createElement('li');
+        listItem.textContent = category.name;
+        listItem.classList.add('list-group-item');
+        listItem.dataset.categoryId = category.id;
+        listItem.addEventListener('click', () => this.toggleCategory(listItem));
+        if (this.selectedCategories.has(category.id)) {
+            listItem.classList.add('selected');
+        }
+        return listItem;
     }
 
     getFilmCategoriesAndMarkSelected() {
         const filmId = document.getElementById('Id').value;
-        fetch(`/api/CategoryAPI/FilmWithCategories/${filmId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch film categories');
-                }
-                return response.json();
-            })
+        this.getFilmCategories(filmId)
             .then(film => {
                 film.categories.forEach(category => {
-                    this.selectedCategories.add(category.id);
-                    const listItem = document.querySelector(`li[data-category-id="${category.id}"]`);
-                    if (listItem) {
-                        listItem.classList.add('selected');
-                    }
+                    this.markSelectedCategory(category.id);
                 });
             })
             .catch(error => {
@@ -66,14 +66,31 @@
             });
     }
 
-    toggleCategory(listItem)
-    {
-        const categoryId = parseInt(listItem.dataset.categoryId); 
+    getFilmCategories(filmId) {
+        return fetch(`/api/CategoryAPI/FilmWithCategories/${filmId}`)
+            .then(response => {
+               if (!response.ok) {
+                   throw new Error('Failed to fetch film categories');
+               }
+               return response.json();
+            });
+    }
+
+    markSelectedCategory(categoryId) {
+        const listItem = document.querySelector(`li[data-category-id="${categoryId}"]`);
+        if (listItem) {
+            listItem.classList.add('selected');
+        }
+        this.selectedCategories.add(categoryId);
+    }
+
+    toggleCategory(listItem) {
+        const categoryId = parseInt(listItem.dataset.categoryId);
         if (this.selectedCategories.has(categoryId)) {
-            this.selectedCategories.delete(categoryId); 
-            listItem.classList.remove('selected'); 
+            this.selectedCategories.delete(categoryId);
+            listItem.classList.remove('selected');
         } else {
-            this.selectedCategories.add(categoryId); 
+            this.selectedCategories.add(categoryId);
             listItem.classList.add('selected');
         }
     }
@@ -102,6 +119,11 @@
             .catch(error => {
                 console.error('Error adding categories:', error.message);
             });
+    }
+
+    removeEventListeners() {
+        this.openCategoryModalButton.removeEventListener('click', this.openCategoryModalHandler);
+        this.addCategoriesButton.removeEventListener('click', this.updateFilmCategoriesHandler);
     }
 }
 

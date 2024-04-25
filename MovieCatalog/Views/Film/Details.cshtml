@@ -82,3 +82,12 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        var categoryModal = document.getElementById('categoryModal');
+        categoryModal.addEventListener('hidden.bs.modal', () => {
+            location.reload();
+        });
+    });
+</script>
